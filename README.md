@@ -74,7 +74,7 @@ f. It makes sense the VM is involved in multiple attacks since it is opened to t
      | where EventID == 4624 or EventID == 4625  
      | where IpAddress == "XX.XX.XX.XXX"  
 
-Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM. 
+Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM.  
 **Step 3: Containment, Eradication and Recovery**
 Next step would be to use the Incident Response Playbook to resolve the incident. The Incident Response workbook was created using ChatGPT for this specific lab. According to the workbook we have to perform the following tasks:  
 * Verify the authenticity of the alert or report.  
@@ -82,26 +82,26 @@ Next step would be to use the Incident Response Playbook to resolve the incident
 * Immediately isolate the machine and change the password of the affected user  
   * *Password of affected user was changed*      
 * Identify the origin of the attacks and determine if they are attacking or involved with anything else  
- * Seems like attacker is involved in another brute force success  
-Attacker involved in a brute force attempt- unsuccessfully  
-Attacker involved in possible privilege escalation 
-*Determine how and when the attack occurred
-Are the NSGs not being locked down? If so, check other NSGs
-Attack occurred at 11/21/2023, 8:22:32 PM
-There was about 12 brute force attempts before a successful login into the VM user account
-The NSG is Opened to the internet 
-*Assess the potential impact of the incident.
- *What type of account was it? Permissions?
-The potential impact is minimal, the user account was a new user account with no administrative privileges or access to corporate network.
+  * *Seems like attacker is involved in another brute force success*    
+  * *Attacker involved in a brute force attempt- unsuccessfully*    
+  * *Attacker involved in possible privilege escalation*   
+* Determine how and when the attack occurred
+  * Are the NSGs not being locked down? If so, check other NSGs
+    * *Attack occurred at 11/21/2023, 8:22:32 PM*
+    * *There was about 12 brute force attempts before a successful login into the VM user account*
+    * *The NSG is Opened to the internet*  
+* Assess the potential impact of the incident.
+  * What type of account was it? Permissions?  
+    * *The potential impact is minimal, the user account was a new user account with no administrative privileges or access to corporate network.*  
 For the Containment and Recovery portion the following task need to be performed: 
-Reset the affected user’s password
-Users password was changed
-Enable MFA
-MFA is not a possibility for this type of VM
-Lock down the NSG assigned to that VM/Subnet, either entirely, or to allow only necessary traffic
-The task of hardening the NSG is in process and only certain IP addresses will be able to access the VM
+* Reset the affected user’s password
+  * *Users password was changed*  
+* Enable MFA
+  * *MFA is not a possibility for this type of VM*  
+* Lock down the NSG assigned to that VM/Subnet, either entirely, or to allow only necessary traffic
+  * *The task of hardening the NSG is in process and only certain IP addresses will be able to access the VM*  
 
-**Step 4: Document Findings/Info and close out the Incident in Sentinel** 
+**Step 4: Document Findings/Info and close out the Incident in Sentinel**  
 Notes have been included in the ticket and now that the incident is solved the ticket has been closed out in Sentinel
 
 
