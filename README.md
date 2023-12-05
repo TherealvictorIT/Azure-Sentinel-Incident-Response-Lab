@@ -14,31 +14,34 @@ The following query rule is designed to identify cases of brute-force attacks on
 The provided query is written in KQL and is used in Microsoft Sentinel. The query consists of three parts and it reads as follows:
 
 **FailedLogons:**    
-let FailedLogons = SecurityEvent  
-| where EventID == 4625 and LogonType == 3  
-| where TimeGenerated > ago(1h)  
-| summarize FailureCount = count() by AttackerIP = IpAddress, EventID, Activity, LogonType, DestinationHostName = Computer  
-| where FailureCount >= 5;  
+
+     let FailedLogons = SecurityEvent  
+     | where EventID == 4625 and LogonType == 3  
+     | where TimeGenerated > ago(1h)  
+     | summarize FailureCount = count() by AttackerIP = IpAddress, EventID, Activity, LogonType, DestinationHostName = Computer  
+     | where FailureCount >= 5;    
 
 The query starts by filtering the SecurityEvent table to select events with EventID 4625 (indicating a failed logon attempt) and LogonType 3 (network logon).
 It further filters events that occurred within the last hour using ago(1h).
 The results are then summarized by counting the occurrences (FailureCount) grouped by AttackerIP, EventID, Activity, LogonType, and DestinationHostName.
 Finally, it filters to include only those entries where the failure count is greater than or equal to 5.
 
-**SuccessfulLogons:**    
-let SuccessfulLogons = SecurityEvent  
-| where EventID == 4624 and LogonType == 3  
-| where TimeGenerated > ago(1h)  
-| summarize SuccessfulCount = count() by AttackerIP = IpAddress, LogonType, DestinationHostName = Computer, AuthenticationSuccessTime = TimeGenerated;  
+**SuccessfulLogons:**   
+
+     let SuccessfulLogons = SecurityEvent  
+     | where EventID == 4624 and LogonType == 3  
+     | where TimeGenerated > ago(1h)  
+     | summarize SuccessfulCount = count() by AttackerIP = IpAddress, LogonType, DestinationHostName = Computer, AuthenticationSuccessTime = TimeGenerated;  
 
 This part of the query filters the SecurityEvent table to select events with EventID 4624 (indicating a successful logon) and LogonType 3 (network logon).
 It filters events that occurred within the last hour using ago(1h).
 The results are summarized by counting the occurrences (SuccessfulCount) grouped by AttackerIP, LogonType, DestinationHostName, and AuthenticationSuccessTime.
 
 **Join and Projection:**    
-SuccessfulLogons  
-| join kind = inner FailedLogons on DestinationHostName, AttackerIP, LogonType  
-| project AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, SuccessfulCount  
+
+     SuccessfulLogons  
+     | join kind = inner FailedLogons on DestinationHostName, AttackerIP, LogonType  
+     | project AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, SuccessfulCount  
 
 The join kind = inner in this query is performing an inner join, combining the results from SuccessfulLogons and FailedLogons only for the rows where there is a match on the specified fields. This ensures that only entries with corresponding values in all specified fields are included in the final result. The final result is projected to include the AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, and SuccessfulCount.
 
@@ -49,25 +52,30 @@ The join kind = inner in this query is performing an inner join, combining the r
 According to NIST 800-61 the first step is Preparation. This was already initiated by ingesting all of the logs into the Log Analytics Workspace and Sentinel and configuring alert rules. A CUSTOM: Brute Force SUCCESS - Windows Incident was triggered 11/21/2023 at 8:22:32 PM with a High Severity level. 
 
 **Step 2: Detection & Analysis**  
-The severity was set to high, status set to Active
-When viewing full details and observing the Activity log of the Incident and observing the Incident timeline not much useful information was found 
-When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired 
-When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:
-Seems like attacker is involved in another brute force success
-Attacker involved in a brute force attempt- unsuccessfully
-Attacker involved in possible privilege escalation 
-When the Windows-VM related alerts it seems the VM is: 
-computer involved in 2 brute force success for windows
-computer involved in multiple other brute force attempts
-computer involved in malware detected 
-computer involved in windows firewall tampering
-computer involved in brute force attempt- MS SQL server
-It makes sense the VM is involved in multiple attacks since it is opened to the internet
-When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address: 
-	SecurityEvent
-| where EventID == 4624 or EventID == 4625
-| where IpAddress == "XX.XX.XX.XXX"
+1. The severity was set to high, status set to Active
+2. When viewing full details and observing the Activity log of the Incident and observing the Incident timeline not much useful information was found 
+3. When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired 
+4. When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:
+a. Seems like attacker is involved in another brute force success  
+b. Attacker involved in a brute force attempt- unsuccessfully  
+c. Attacker involved in possible privilege escalation 
+5. When the Windows-VM related alerts it seems the VM is: 
+a. computer involved in 2 brute force success for windows
+b. computer involved in multiple other brute force attempts
+c. computer involved in malware detected 
+d. computer involved in windows firewall tampering
+e. computer involved in brute force attempt- MS SQL server
+f. It makes sense the VM is involved in multiple attacks since it is opened to the internet
+6. When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address:
+
+**Query:**
+
+     SecurityEvent  
+     | where EventID == 4624 or EventID == 4625  
+     | where IpAddress == "XX.XX.XX.XXX"  
+
 Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM. 
+
 ![Architecture Diagram](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/97899627-2aed-4629-84ab-03ea88a1def0">)
 
 The structure of the honeynet in Azure comprises the following components:
