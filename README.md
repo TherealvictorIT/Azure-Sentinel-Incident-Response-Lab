@@ -3,7 +3,6 @@
 
 
 ## Introduction
-
 Over a 24-hour period, we intentionally exposed our virtual machines (VMs) to potential online threats. To simulate a vulnerable scenario, we disabled the Microsoft Defender firewall on the VMs and the Network Security Group on Azure, making it easier for the machines to be discoverable on the internet. The objective was to subject the VMs to potential attacks, allowing for the generation of security incidents within Microsoft Sentinel based on predefined rules. 
 
 ## Incident: Brute Force SUCCESS - Windows 
@@ -43,8 +42,32 @@ SuccessfulLogons
 
 The join kind = inner in this query is performing an inner join, combining the results from SuccessfulLogons and FailedLogons only for the rows where there is a match on the specified fields. This ensures that only entries with corresponding values in all specified fields are included in the final result. The final result is projected to include the AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, and SuccessfulCount.
 
+## Incident Response  
+*Incidents generated within Azure Sentinel, will be worked in accordance with the NIST 800-61 Incident Management Lifecycle. ## Architecture After Hardening / Security Controls*
 
-## Architecture After Hardening / Security Controls
+**Step 1: Preparation**  
+According to NIST 800-61 the first step is Preparation. This was already initiated by ingesting all of the logs into the Log Analytics Workspace and Sentinel and configuring alert rules. A CUSTOM: Brute Force SUCCESS - Windows Incident was triggered 11/21/2023 at 8:22:32 PM with a High Severity level. 
+
+**Step 2: Detection & Analysis**  
+The severity was set to high, status set to Active
+When viewing full details and observing the Activity log of the Incident and observing the Incident timeline not much useful information was found 
+When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired 
+When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:
+Seems like attacker is involved in another brute force success
+Attacker involved in a brute force attempt- unsuccessfully
+Attacker involved in possible privilege escalation 
+When the Windows-VM related alerts it seems the VM is: 
+computer involved in 2 brute force success for windows
+computer involved in multiple other brute force attempts
+computer involved in malware detected 
+computer involved in windows firewall tampering
+computer involved in brute force attempt- MS SQL server
+It makes sense the VM is involved in multiple attacks since it is opened to the internet
+When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address: 
+	SecurityEvent
+| where EventID == 4624 or EventID == 4625
+| where IpAddress == "XX.XX.XX.XXX"
+Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM. 
 ![Architecture Diagram](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/97899627-2aed-4629-84ab-03ea88a1def0">)
 
 The structure of the honeynet in Azure comprises the following components:
