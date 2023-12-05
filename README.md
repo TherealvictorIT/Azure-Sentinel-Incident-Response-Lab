@@ -1,5 +1,6 @@
 # Azure-Sentinel-Incident-Response-Lab
-![Cloud Honeynet / SOC](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/33ad4cc3-33c9-415d-af6f-e9ebd4b1df51)
+![Incident response infographic](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/8e11b5bb-dfa0-475a-a890-f28e574a6722)
+
 
 ## Introduction
 
