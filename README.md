@@ -6,23 +6,10 @@
 Over a 24-hour period, we intentionally exposed our virtual machines (VMs) to potential online threats. To simulate a vulnerable scenario, we disabled the Microsoft Defender firewall on the VMs and the Network Security Group on Azure, making it easier for the machines to be discoverable on the internet. The objective was to subject the VMs to potential attacks, allowing for the generation of security incidents within Microsoft Sentinel based on predefined rules. 
 
 ## Incident: Brute Force SUCCESS - Windows 
-![Architecture Diagram](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/d0aac605-677e-492e-b256-16e910db6b25">)
 The following query rule is designed to identify cases of brute-force attacks on Windows systems.This rule detects Windows brute-force attacks by analyzing failed and successful logon attempts within the last hour. It flags instances where an actor makes multiple unsuccessful login attempts before succeeding, indicating a successful brute-force attack.   
 
 Query Rule:  
-// Brute Force Success Windows  
-let FailedLogons = SecurityEvent  
-| where EventID == 4625 and LogonType == 3  
-| where TimeGenerated > ago(1h)  
-| summarize FailureCount = count() by AttackerIP = IpAddress, EventID, Activity, LogonType, DestinationHostName = Computer  
-| where FailureCount >= 5;  
-let SuccessfulLogons = SecurityEvent  
-| where EventID == 4624 and LogonType == 3  
-| where TimeGenerated > ago(1h)  
-| summarize SuccessfulCount = count() by AttackerIP = IpAddress, LogonType, DestinationHostName = Computer, AuthenticationSuccessTime = TimeGenerated;  
-SuccessfulLogons  
-| join kind = inner FailedLogons on DestinationHostName, AttackerIP, LogonType  
-| project AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, SuccessfulCount  
+![Brute Force Success Query](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/78c43a55-dc07-4694-be7d-dfa2a038d271)
 
 The provided query is written in KQL and is used in Microsoft Sentinel. The query consists of three parts and it reads as follows:
 
