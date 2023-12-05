@@ -46,7 +46,10 @@ The results are summarized by counting the occurrences (SuccessfulCount) grouped
 The join kind = inner in this query is performing an inner join, combining the results from SuccessfulLogons and FailedLogons only for the rows where there is a match on the specified fields. This ensures that only entries with corresponding values in all specified fields are included in the final result. The final result is projected to include the AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, and SuccessfulCount.
 
 ## Incident Response  
-*Incidents generated within Azure Sentinel, will be worked in accordance with the NIST 800-61 Incident Management Lifecycle. ## Architecture After Hardening / Security Controls*
+*Incidents generated within Azure Sentinel, will be worked in accordance with the NIST 800-61 Incident Management Lifecycle. ## Architecture After Hardening / Security Controls*    
+<p align="center">
+  <img src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/2b3cb36b-c677-414f-9828-e8c42cbca4ea" alt="NIST 800-61">
+</p>
 
 **Step 1: Preparation**  
 According to NIST 800-61 the first step is Preparation. This was already initiated by ingesting all of the logs into the Log Analytics Workspace and Sentinel and configuring alert rules. A CUSTOM: Brute Force SUCCESS - Windows Incident was triggered 11/21/2023 at 8:22:32 PM with a High Severity level. 
@@ -74,8 +77,9 @@ f. It makes sense the VM is involved in multiple attacks since it is opened to t
      | where EventID == 4624 or EventID == 4625  
      | where IpAddress == "XX.XX.XX.XXX"  
 
-Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM.  
-**Step 3: Containment, Eradication and Recovery**
+Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM.   
+
+**Step 3: Containment, Eradication and Recovery**  
 Next step would be to use the Incident Response Playbook to resolve the incident. The Incident Response workbook was created using ChatGPT for this specific lab. According to the workbook we have to perform the following tasks:  
 * Verify the authenticity of the alert or report.  
   * *In this case the alert is a True Positive, there were initial brute force attempts and a successful login into the a user account associated with the VM*     
