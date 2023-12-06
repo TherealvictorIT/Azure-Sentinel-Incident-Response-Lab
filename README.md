@@ -81,7 +81,7 @@ f. It makes sense the VM is involved in multiple attacks since it is opened to t
 
 8. When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address:  
 
-**Query:**
+**Query Rule:**
 
      SecurityEvent  
      | where EventID == 4624 or EventID == 4625  
@@ -130,7 +130,7 @@ Notes have been included in the ticket and now that the incident is solved the t
 ## Incident: Possible Privilege Escalation (Azure Key Vault Critical Credential Retrieval or Update)
 The following query is designed to monitor the Azure Key Vault for operations related to accessing or updating a specific password named "Tenant-Global-Admin-Password." It offers visibility into activities involving this critical password.  
 
-**Query:**   
+**Query Rule:**   
 
      // Updating a specific existing password Success  
      let CRITICAL_PASSWORD_NAME = "Tenant-Global-Admin-Password";  
@@ -159,4 +159,41 @@ Preparation was already initiated by ingesting all of the logs into the Log Anal
 
 **Step 4: Document Findings/Info and close out the Incident in Sentinel** 
 Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.  
-![Possible privilage escalation Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/f088e752-7144-4e4a-9fe0-c0d8d110be41)
+![Possible privilage escalation Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/f088e752-7144-4e4a-9fe0-c0d8d110be41)  
+
+
+## Incident: Malware Detected
+This query rule is targeting events from the Microsoft Windows Defender log and specifically focusing on events with Event IDs "1116" (scan started) or "1117" (scan complete). These events are part of the logging mechanism of Windows Defender Antivirus and can be used to keep track of when antivirus scans start and finish on a system. Monitoring these events helps in understanding the security activities and performance of the antivirus software on a Windows system.  
+
+**Query Rule:**  
+    
+     Event
+     | where EventLog == "Microsoft-Windows-Windows Defender/Operational"
+     | where EventID == "1116" or EventID == "1117"  
+     
+## Incident Response 
+**Step 1: Preparation** 
+Preparation was already initiated by ingesting all of the logs into the Log Analytics Workspace and Sentinel and configuring alert rules.  Alert CUSTOM: Malware Detected Incident was triggered at 11/21/2023, 7:36:29 PM with High Severity.  
+
+**Step 2: Detection & Analysis** 
+1. The severity was set to high, status set to Active
+2. Seven similar alerts were triggered within a short timeframe and it also seems like the VM is involved in other incidents including several brute force attempts and successes as well as a Windows Host Firewall Tampering.
+
+![Malware Detected related incidents](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/bbab2b25-c5d6-43e0-bb78-70e3d9ae39e8)
+
+3. When observing the individual incidents that triggered the alert all incidents lead to a Microsoft knowledge document: (https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?name=Virus%3ADOS%2FEICAR_Test_File&threatid=2147519003&enterprise=0)
+
+![Malware detected LAW Query](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/5d2cda5e-e024-4049-9ba0-c4aae11bc277)
+
+The document indicated that the file triggered by the system was an DOS/EICAR_Test_File and it’s used to check that your security software is working properly.
+
+![Malware detected Microsoft article](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/091d8dbf-4c29-4793-a18a-a8be8580ecb7)
+
+6. User and manager were contacted and tickets INC123458 indicates that user was performing test on environment
+7. Ticket will be closed out as false positive 
+
+**Step 4: Document Findings/Info and close out the Incident in Sentinel** 
+Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.
+
+![malware detected Ticket](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/1801895d-1df8-4ff0-afe3-ddeea8f4a35d)
+
