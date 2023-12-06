@@ -148,9 +148,15 @@ Preparation was already initiated by ingesting all of the logs into the Log Anal
 2. When looking at the Incident Timeline we can observe that the password is being viewed multiple times within a small time frame  
 3. The password is being viewed by Victor Garcia (victor.garcia_gmail.com#EXT#@victorgarciagmail.onmicrosoft.com)  
 4. Upon further investigation it seems like the user was involved in excessive password reset incident and also involved in a global role assignment  
-*The alert was intentionally triggered to illustrate the resolution process. The following content outlines how the situation would unfold if it were an actual scenario.*  
+*The alert was intentionally triggered to illustrate the resolution process. The following content outlines how the situation would unfold if it were an actual scenario.*
+
+<p align="center"> 
+<img width="539" alt="possible privilage escalation Josh prt2" src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/53316931-2fdc-4016-b038-3b926f42ae1c">
+</p>
+   
 5. In this incident it was determined that it is a false positive  
 6. Upon contacting the individual and asking why he viewed the password so many times the user indicated that he was working on a project as described in ticket INC123456. User also assigned a global role to a user as described in INC123457. These tasks were confirmed by the users manager. Written confirmation is included in tickets.  
 
 **Step 4: Document Findings/Info and close out the Incident in Sentinel** 
-Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.
+Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.  
+![Possible privilage escalation Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/f088e752-7144-4e4a-9fe0-c0d8d110be41)
