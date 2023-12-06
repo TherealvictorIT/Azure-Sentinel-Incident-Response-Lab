@@ -127,3 +127,30 @@ Notes have been included in the ticket and now that the incident is solved the t
 ![Windows Brute Force Success Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/4e7e08b9-c5a3-46ca-8f6d-61cc1d370e4c)
 
 
+## Incident: Possible Privilege Escalation (Azure Key Vault Critical Credential Retrieval or Update)
+The following query is designed to monitor the Azure Key Vault for operations related to accessing or updating a specific password named "Tenant-Global-Admin-Password." It offers visibility into activities involving this critical password.  
+
+**Query:**   
+
+     // Updating a specific existing password Success  
+     let CRITICAL_PASSWORD_NAME = "Tenant-Global-Admin-Password";  
+     AzureDiagnostics  
+     | where ResourceProvider == "MICROSOFT.KEYVAULT"  
+     | where OperationName == "SecretGet" or OperationName == "SecretSet"  
+     | where id_s contains CRITICAL_PASSWORD_NAME  
+
+## Incident Response  
+**Step 1: Preparation**     
+Preparation was already initiated by ingesting all of the logs into the Log Analytics Workspace and Sentinel and configuring alert rules.  A CUSTOM: Possible Privilege Escalation Incident was triggered at 11/21/2023, 7:46:33 PM with High Severity.  
+
+**Step 2: Detection & Analysis**    
+1. The severity was set to high, status set to Active  
+2. When looking at the Incident Timeline we can observe that the password is being viewed multiple times within a small time frame  
+3. The password is being viewed by Victor Garcia (victor.garcia_gmail.com#EXT#@victorgarciagmail.onmicrosoft.com)  
+4. Upon further investigation it seems like the user was involved in excessive password reset incident and also involved in a global role assignment  
+*The alert was intentionally triggered to illustrate the resolution process. The following content outlines how the situation would unfold if it were an actual scenario.*  
+5. In this incident it was determined that it is a false positive  
+6. Upon contacting the individual and asking why he viewed the password so many times the user indicated that he was working on a project as described in ticket INC123456. User also assigned a global role to a user as described in INC123457. These tasks were confirmed by the users manager. Written confirmation is included in tickets.  
+
+**Step 4: Document Findings/Info and close out the Incident in Sentinel** 
+Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.
