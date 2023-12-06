@@ -58,23 +58,28 @@ According to NIST 800-61 the first step is Preparation. This was already initiat
 1. The severity was set to high, status set to Active
 2. When examining the complete details and reviewing the Activity log of the incident, as well as analyzing the incident timeline, not much valuable information was discovered.  
 3. When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired
-   
+4. When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:     
+a. Attacker involved in another brute force success    
+b. Attacker involved in a brute force attempt- unsuccessfully    
+c. Attacker involved in possible privilege escalation  
+
+<p align="center"> 
+      <img src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/b8b5e9f6-8127-43fe-bdff-4e13ba3d4e7b" alt="Brute force Success- Windows VM related attacks" width="800">
+</p>
+
+6. When the clicking the Windows-VM related alerts, it seems the VM is:     
+a. computer involved in 2 brute force success for windows  
+b. computer involved in multiple other brute force attempts  
+c. computer involved in malware detected   
+d. computer involved in windows firewall tampering  
+e. computer involved in brute force attempt- MS SQL server  
+f. It makes sense the VM is involved in multiple attacks since it is opened to the internet
+
 <p align="center"> 
      <img src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/cdfe7813-491e-4b62-a8b5-842ceba7d6e4" alt="Brute force Success- Windows VM related attacks" width="800">
 </p>
 
-4. When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:     
-a. Seems like attacker is involved in another brute force success  
-b. Attacker involved in a brute force attempt- unsuccessfully  
-c. Attacker involved in possible privilege escalation 
-5. When the Windows-VM related alerts it seems the VM is:   
-a. computer involved in 2 brute force success for windows
-b. computer involved in multiple other brute force attempts
-c. computer involved in malware detected 
-d. computer involved in windows firewall tampering
-e. computer involved in brute force attempt- MS SQL server
-f. It makes sense the VM is involved in multiple attacks since it is opened to the internet
-6. When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address:
+8. When trying to investigate if this is a legitimate brute force attempt we performed a query in Log Analytics Workspace to figure out if the attacker logged onto a user account within the VM. A simple query is performed to find failed and successful logins from a specific IP address:  
 
 **Query:**
 
@@ -83,9 +88,15 @@ f. It makes sense the VM is involved in multiple attacks since it is opened to t
      | where IpAddress == "XX.XX.XX.XXX"  
 
 Based on our findings the attacker was able to successfully login into the VM. The user logged into a user account within the VM.   
+![Brute force Success - Windows Successful and failed logins](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/b32d37db-3aaf-4050-b6ef-5997d7b8460e)
 
 **Step 3: Containment, Eradication and Recovery**  
-Next step would be to use the Incident Response Playbook to resolve the incident. The Incident Response workbook was created using ChatGPT for this specific lab. According to the workbook we have to perform the following tasks:  
+Next step would be to use the Incident Response Playbook to resolve the incident. The Incident Response workbook was created using ChatGPT for this specific lab. According to the workbook we have to perform the following tasks: 
+
+<p align="center">
+<img width="802" alt="Brute force success _ incident recovery palybook" src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/323507d9-79d6-4558-88f7-89b6e2c5a92c">
+</p>  
+
 * Verify the authenticity of the alert or report.  
   * *In this case the alert is a True Positive, there were initial brute force attempts and a successful login into the a user account associated with the VM*     
 * Immediately isolate the machine and change the password of the affected user  
@@ -113,65 +124,6 @@ For the Containment and Recovery portion the following task need to be performed
 **Step 4: Document Findings/Info and close out the Incident in Sentinel**  
 Notes have been included in the ticket and now that the incident is solved the ticket has been closed out in Sentinel
 
-
-![Architecture Diagram](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/97899627-2aed-4629-84ab-03ea88a1def0">)
-
-The structure of the honeynet in Azure comprises the following components:
-
-- Virtual Network (VNet)
-- Network Security Group (NSG)
-- Virtual Machines (2 windows, 1 linux)
-- Log Analytics Workspace
-- Azure Key Vault
-- Azure Storage Account
-- Microsoft Sentinel
-
-For the “Before” metrics, all resources were deployed with exposure to the internet. The Virtual Machines had both their Network Security Groups and built-in firewalls wide open, and all other resources were deployed with public endpoints visible to the Internet; aka, no use for Private Endpoints.  
-
-For the "AFTER" metrics, Network Security Groups were hardened by blocking ALL traffic with the exception of an admin workstation, and all other resources were protected by their built-in firewalls as well as Private Endpoint  
+![Windows Brute Force Success Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/4e7e08b9-c5a3-46ca-8f6d-61cc1d370e4c)
 
 
-## Attack Maps Before Hardening / Security Controls
-![NSG Allowed Inbound Malicious Flows](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/c58454a2-5887-43c7-9e92-f6fb0f012f03)<br>
-![Linux Syslog Auth Failures](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/3594d3bd-9b1c-4796-8572-b9854a04ecfb)<br>
-![Windows RDP/SMB Auth Failures](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/0187de7a-0249-411c-ba4c-ac235f168848)<br>
-![MSSQL Auth Faiures](https://github.com/TherealvictorIT/Azure-Sentinel-Honey-net-Lab-/assets/125538763/1420d52c-54d1-4d20-beac-14bc3c0f3957)<br> 
-
-
-## Metrics Before Hardening / Security Controls
-
-The following table shows the metrics we measured in our insecure environment for 24 hours:
-Start Time 2023-11-21 T15:37
-Stop Time 2023-11-22 T15:37
-
-| Metric                   | Count
-| ------------------------ | -----
-| SecurityEvent            | 22476
-| Syslog                   | 7747
-| SecurityAlert            | 11
-| SecurityIncident         | 168
-| AzureNetworkAnalytics_CL | 3777
-
-## Attack Maps After Hardening / Security Controls
-
-```All map queries actually returned no results due to no instances of malicious activity for the 24 hour period after hardening.```
-
-## Metrics After Hardening / Security Controls
-
-The following table shows the metrics we measured in our environment for another 24 hours, but after we have applied security controls:
-Start Time 2023-11-21 15:37
-Stop Time	2023-11-21 15:37
-
-| Metric                   | Count
-| ------------------------ | -----
-| SecurityEvent            | 8778
-| Syslog                   | 25
-| SecurityAlert            | 0
-| SecurityIncident         | 0
-| AzureNetworkAnalytics_CL | 0
-
-## Conclusion
-
-In this project, a mini honeynet was constructed in Microsoft Azure and log sources were integrated into a Log Analytics workspace. Microsoft Sentinel was employed to trigger alerts and create incidents based on the ingested logs. Additionally, metrics were measured in the insecure environment before security controls were applied, and then again after implementing security measures. It is noteworthy that the number of security events and incidents were drastically reduced after the security controls were applied, demonstrating their effectiveness.
-
-It is worth noting that if the resources within the network were heavily utilized by regular users, it is likely that more security events and alerts may have been generated within the 24-hour period following the implementation of the security controls.
