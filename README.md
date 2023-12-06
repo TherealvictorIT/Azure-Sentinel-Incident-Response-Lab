@@ -56,13 +56,18 @@ According to NIST 800-61 the first step is Preparation. This was already initiat
 
 **Step 2: Detection & Analysis**  
 1. The severity was set to high, status set to Active
-2. When viewing full details and observing the Activity log of the Incident and observing the Incident timeline not much useful information was found 
-3. When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired 
-4. When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:
+2. When examining the complete details and reviewing the Activity log of the incident, as well as analyzing the incident timeline, not much valuable information was discovered.  
+3. When observing the Entities section the attackers IP address is found and some Geolocation information can be acquired
+   
+<p align="center"> 
+     <img src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/cdfe7813-491e-4b62-a8b5-842ceba7d6e4" alt="Brute force Success- Windows VM related attacks" width="800">
+</p>
+
+4. When Investigating the incident and clicking on the attackers related alerts it seems the attacker is:     
 a. Seems like attacker is involved in another brute force success  
 b. Attacker involved in a brute force attempt- unsuccessfully  
 c. Attacker involved in possible privilege escalation 
-5. When the Windows-VM related alerts it seems the VM is: 
+5. When the Windows-VM related alerts it seems the VM is:   
 a. computer involved in 2 brute force success for windows
 b. computer involved in multiple other brute force attempts
 c. computer involved in malware detected 
