@@ -112,7 +112,8 @@ Next step would be to use the Incident Response Playbook to resolve the incident
     * *The NSG is Opened to the internet*  
 * Assess the potential impact of the incident.
   * What type of account was it? Permissions?  
-    * *The potential impact is minimal, the user account was a new user account with no administrative privileges or access to corporate network.*  
+    * *The potential impact is minimal, the user account was a new user account with no administrative privileges or access to corporate network.*    
+
 For the Containment and Recovery portion the following task need to be performed: 
 * Reset the affected user’s password
   * *Users password was changed*  
@@ -157,7 +158,7 @@ Preparation was already initiated by ingesting all of the logs into the Log Anal
 5. In this incident it was determined that it is a false positive  
 6. Upon contacting the individual and asking why he viewed the password so many times the user indicated that he was working on a project as described in ticket INC123456. User also assigned a global role to a user as described in INC123457. These tasks were confirmed by the users manager. Written confirmation is included in tickets.  
 
-**Step 4: Document Findings/Info and close out the Incident in Sentinel** 
+**Step 4: Document Findings/Info and close out the Incident in Sentinel**  
 Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.  
 ![Possible privilage escalation Step 4](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/f088e752-7144-4e4a-9fe0-c0d8d110be41)  
 
@@ -192,7 +193,7 @@ The document indicated that the file triggered by the system was an DOS/EICAR_Te
 6. User and manager were contacted and tickets INC123458 indicates that user was performing test on environment
 7. Ticket will be closed out as false positive 
 
-**Step 4: Document Findings/Info and close out the Incident in Sentinel** 
+**Step 4: Document Findings/Info and close out the Incident in Sentinel**  
 Step 3 will be skipped since this is a false positive and no Containment, Eradication and Recovery needs to be performed. User was doing his normal job duties so the ticket will be closed out as a false positive.
 
 ![malware detected Ticket](https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/1801895d-1df8-4ff0-afe3-ddeea8f4a35d)
