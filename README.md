@@ -46,7 +46,7 @@ The results are summarized by counting the occurrences (SuccessfulCount) grouped
 The join kind = inner in this query is performing an inner join, combining the results from SuccessfulLogons and FailedLogons only for the rows where there is a match on the specified fields. This ensures that only entries with corresponding values in all specified fields are included in the final result. The final result is projected to include the AuthenticationSuccessTime, AttackerIP, DestinationHostName, FailureCount, and SuccessfulCount.
 
 ## Incident Response  
-*Incidents generated within Azure Sentinel, will be worked in accordance with the NIST 800-61 Incident Management Lifecycle. ## Architecture After Hardening / Security Controls*    
+*Incidents generated within Azure Sentinel, will be worked in accordance with the NIST 800-61 Incident Management Lifecycle.    
 <p align="center">
   <img src="https://github.com/TherealvictorIT/Azure-Sentinel-Incident-Response-Lab/assets/125538763/2b3cb36b-c677-414f-9828-e8c42cbca4ea" alt="NIST 800-61">
 </p>
